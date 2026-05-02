@@ -1,4 +1,4 @@
-# huffman-compressor
+# HuffZip
 
 A lossless file compressor using Huffman coding. Compresses text files into a compact `.huff` binary format and decompresses them back perfectly.
 
