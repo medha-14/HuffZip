@@ -3,19 +3,21 @@
 #include <unordered_map>
 #include <cstdint>
 
-std::string read_binary_file(const std::string& path);
-void        write_binary_file(const std::string& path, const std::string& data);
+using namespace std;
+
+string read_binary_file(const string& path);
+void        write_binary_file(const string& path, const string& data);
 
 // .huff format: magic(4) + num_entries(4) + [byte(1)+freq(4)]*N + bit_count(8) + packed_data
-void write_huff_file(const std::string& path,
-                     const std::unordered_map<uint8_t, int>& freq_table,
+void write_huff_file(const string& path,
+                     const unordered_map<uint8_t, int>& freq_table,
                      uint64_t bit_count,
-                     const std::string& packed_data);
+                     const string& packed_data);
 
 struct HuffHeader {
-    std::unordered_map<uint8_t, int> freq_table;
+    unordered_map<uint8_t, int> freq_table;
     uint64_t                         bit_count = 0;
-    std::string                      packed_data;
+    string                      packed_data;
 };
 
-HuffHeader read_huff_file(const std::string& path);
+HuffHeader read_huff_file(const string& path);
