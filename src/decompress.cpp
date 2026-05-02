@@ -6,6 +6,14 @@
 #include <iostream>
 #include <string>
 
+static std::string default_output(const std::string& huff_path) {
+    const std::string suffix = ".huff";
+    if (huff_path.size() > suffix.size() &&
+        huff_path.substr(huff_path.size() - suffix.size()) == suffix)
+        return huff_path.substr(0, huff_path.size() - suffix.size());
+    return huff_path + ".out";
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2 || argc > 3) {
         std::cerr << "Usage: decompress <file.huff> [output_file]\n";
@@ -13,7 +21,7 @@ int main(int argc, char* argv[]) {
     }
 
     const std::string input_path  = argv[1];
-    const std::string output_path = (argc == 3) ? argv[2] : "output.bin";
+    const std::string output_path = (argc == 3) ? argv[2] : default_output(input_path);
 
     HuffHeader hdr;
     try {
