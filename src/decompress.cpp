@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     }
 
     const std::string input_path  = argv[1];
-    const std::string output_path = (argc == 3) ? argv[2] : "output.txt";
+    const std::string output_path = (argc == 3) ? argv[2] : "output.bin";
 
     HuffHeader hdr;
     try {
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     std::string decoded = decode(bit_string, tree.get());
 
     try {
-        write_text_file(output_path, decoded);
+        write_binary_file(output_path, decoded);
     } catch (const std::exception& e) {
         std::cerr << "[ERROR] " << e.what() << "\n";
         return 1;

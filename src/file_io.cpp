@@ -1,21 +1,6 @@
 #include "file_io.h"
 #include <fstream>
-#include <sstream>
 #include <stdexcept>
-
-std::string read_text_file(const std::string& path) {
-    std::ifstream f(path);
-    if (!f.is_open()) throw std::runtime_error("Cannot open: " + path);
-    std::ostringstream ss;
-    ss << f.rdbuf();
-    return ss.str();
-}
-
-void write_text_file(const std::string& path, const std::string& content) {
-    std::ofstream f(path);
-    if (!f.is_open()) throw std::runtime_error("Cannot write: " + path);
-    f << content;
-}
 
 std::string read_binary_file(const std::string& path) {
     std::ifstream f(path, std::ios::binary);
@@ -51,15 +36,15 @@ static uint64_t read_u64(const std::string& buf, size_t& pos) {
 }
 
 void write_huff_file(const std::string& path,
-                     const std::unordered_map<char, int>& freq_table,
+                     const std::unordered_map<uint8_t, int>& freq_table,
                      uint64_t bit_count,
                      const std::string& packed_data)
 {
     std::string buf;
     buf += 'H'; buf += 'U'; buf += 'F'; buf += 'F';
     write_u32(buf, static_cast<uint32_t>(freq_table.size()));
-    for (auto& [ch, freq] : freq_table) {
-        buf += static_cast<char>(ch);
+    for (auto& [b, freq] : freq_table) {
+        buf += static_cast<char>(b);
         write_u32(buf, static_cast<uint32_t>(freq));
     }
     write_u64(buf, bit_count);
@@ -77,8 +62,8 @@ HuffHeader read_huff_file(const std::string& path) {
     uint32_t num_entries = read_u32(raw, pos);
     for (uint32_t i = 0; i < num_entries; ++i) {
         if (pos >= raw.size()) throw std::runtime_error("read_huff_file: truncated");
-        char ch = raw[pos++];
-        hdr.freq_table[ch] = static_cast<int>(read_u32(raw, pos));
+        uint8_t b = static_cast<uint8_t>(raw[pos++]);
+        hdr.freq_table[b] = static_cast<int>(read_u32(raw, pos));
     }
     hdr.bit_count   = read_u64(raw, pos);
     hdr.packed_data = raw.substr(pos);
